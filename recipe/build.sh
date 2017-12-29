@@ -3,12 +3,14 @@
 set -e
 set -x
 
-# Static TLS has caused users to experience some errors of the form
-# "libjemalloc.so.2: cannot allocate memory in static TLS block"
-#
-# We disable this feature until we better understand how to avoid loader errors
-# of this type
+if [[ ${HOST} =~ .*darwin.* ]] ; then
+  export LDFLAGS="${LDFLAGS_CC} -Wl,-rpath,${PREFIX}/lib"
+fi
+
 ./configure --prefix=$PREFIX \
-            --disable-tls
+            --build=${BUILD} \
+            --host=${HOST}
 make -j${CPU_COUNT}
+make tests
+make check
 make install

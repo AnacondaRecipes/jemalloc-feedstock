@@ -12,10 +12,19 @@ source:
 build:
   number: 0
   skip: true  # [win]
+  run_exports:
+    # https://abi-laboratory.pro/tracker/timeline/jemalloc/
+    - {{ pin_subpackage('jemalloc') }}
 
 requirements:
+  host:
+    - make
+    # This should be removed once this is fixed:
+    # https://github.com/conda/conda-build/issues/2607
+    - libcxx  # [osx]
   build:
-    - toolchain
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
 
 test:
   commands:
