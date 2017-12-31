@@ -8,9 +8,13 @@ source:
   fn: {{ version }}.tar.bz2
   url: https://github.com/jemalloc/jemalloc/releases/download/{{ version }}/jemalloc-{{ version }}.tar.bz2
   sha256: 4814781d395b0ef093b21a08e8e6e0bd3dab8762f9935bbfb71679b0dea7c3e9
+  patches:
+    # https://github.com/jemalloc/jemalloc/issues/937
+    - 0001-Add-the-mtls-dialect-gnu2-to-compile-flags.patch
+    - 0002-Make-sure-JE_CXXFLAGS_ADD-uses-CPP-compiler.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/jemalloc/
@@ -18,11 +22,13 @@ build:
 
 requirements:
   host:
-    - make
     # This should be removed once this is fixed:
     # https://github.com/conda/conda-build/issues/2607
     - libcxx  # [osx]
   build:
+    - make
+    - automake
+    - autoconf
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
 
