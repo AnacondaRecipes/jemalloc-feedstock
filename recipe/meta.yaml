@@ -1,4 +1,4 @@
-{% set version = "5.0.1" %}
+{% set version = "5.2.1" %}
 
 package:
   name: jemalloc
@@ -7,7 +7,7 @@ package:
 source:
   fn: {{ version }}.tar.bz2
   url: https://github.com/jemalloc/jemalloc/releases/download/{{ version }}/jemalloc-{{ version }}.tar.bz2
-  sha256: 4814781d395b0ef093b21a08e8e6e0bd3dab8762f9935bbfb71679b0dea7c3e9
+  sha256: 34330e5ce276099e2e8950d9335db5a875689a4c6a56751ef3b1d8c537f887f6
   patches:
     # https://github.com/jemalloc/jemalloc/issues/937
     - 0001-Add-the-mtls-dialect-gnu2-to-compile-flags.patch
