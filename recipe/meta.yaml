@@ -10,7 +10,6 @@ source:
   sha256: 34330e5ce276099e2e8950d9335db5a875689a4c6a56751ef3b1d8c537f887f6
   patches:
     # https://github.com/jemalloc/jemalloc/issues/937
-    - 0001-Add-the-mtls-dialect-gnu2-to-compile-flags.patch
     - 0002-Make-sure-JE_CXXFLAGS_ADD-uses-CPP-compiler.patch
 
 build:
