@@ -12,7 +12,7 @@ source:
     - export-mangled-syms.patch
 
 build:
-  number: 5
+  number: 6
   run_exports:
     # Symbols were only removed in update from 3 to 4
     # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
