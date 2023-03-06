@@ -2,8 +2,7 @@
 # Get an updated config.sub and config.guess
 cp $BUILD_PREFIX/share/gnuconfig/config.* ./build-aux
 
-set -e
-set -x
+set -exuo pipefail
 
 # Static TLS has caused users to experience some errors of the form
 # "libjemalloc.so.2: cannot allocate memory in static TLS block"

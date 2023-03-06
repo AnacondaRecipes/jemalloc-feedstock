@@ -13,11 +13,13 @@ source:
 
 build:
   number: 6
+  skip: true  # [win]
   run_exports:
     # Symbols were only removed in update from 3 to 4
     # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
     - {{ pin_subpackage(name, max_pin=None) }}
-  skip: true  # [win]
+  missing_dso_whitelist:
+    - "$RPATH/ld64.so.1"  # [s390x]
 
 requirements:
   build:
@@ -25,7 +27,6 @@ requirements:
     - gnuconfig  # [unix]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - m2-patch  # [win]
     - patch     # [not win]
   host:
 
@@ -43,11 +44,20 @@ test:
     - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloc test.c
 
 about:
-  home: http://jemalloc.net
+  home: https://jemalloc.net/
   dev_url: https://github.com/jemalloc/jemalloc
+  doc_url: https://jemalloc.net/
   license: BSD-2-Clause
+  license_family: BSD
   license_file: COPYING
   summary: 'general purpose malloc(3) implementation'
+  description: |
+    jjemalloc is a general purpose malloc(3) implementation that emphasizes fragmentation avoidance and scalable concurrency support. 
+    jemalloc first came into use as the FreeBSD libc allocator in 2005, and since then it has found its way into numerous applications 
+    that rely on its predictable behavior. In 2010 jemalloc development efforts broadened to include developer support features 
+    such as heap profiling and extensive monitoring/tuning hooks. Modern jemalloc releases continue to be integrated back into FreeBSD, 
+    and therefore versatility remains critical. Ongoing development efforts trend toward making jemalloc among the best allocators 
+    for a broad range of demanding applications, and eliminating/mitigating weaknesses that have practical repercussions for real world applications.
 
 extra:
   recipe-maintainers:
