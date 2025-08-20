@@ -1,52 +1,49 @@
 {% set name = "jemalloc" %}
-{% set version = "5.2.1" %}
+{% set version = "5.3.0" %}
 
 package:
   name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://github.com/jemalloc/jemalloc/releases/download/{{ version }}/jemalloc-{{ version }}.tar.bz2
-  sha256: 34330e5ce276099e2e8950d9335db5a875689a4c6a56751ef3b1d8c537f887f6
+  url: https://github.com/{{ name }}/{{ name }}/releases/download/{{ version }}/{{ name }}-{{ version }}.tar.bz2
+  sha256: 2db82d1e7119df3e71b7640219b6dfe84789bc0537983c3b7ac4f7189aecfeaa
   patches:
     - export-mangled-syms.patch
 
 build:
-  number: 6
+  number: 0
   skip: true  # [win]
   run_exports:
     # Symbols were only removed in update from 3 to 4
     # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
     - {{ pin_subpackage(name, max_pin=None) }}
-  missing_dso_whitelist:
-    - "$RPATH/ld64.so.1"  # [s390x]
 
 requirements:
   build:
     - make
     - gnuconfig  # [unix]
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - patch     # [not win]
-  host:
 
 test:
   requires:
+    - {{ stdlib('c') }}
     - {{ compiler('c') }}
   files:
     - test.c
   commands:
-    - test -f $PREFIX/lib/libjemalloc.so.2  # [linux]
+    - test -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
+    - test -f $PREFIX/include/jemalloc/jemalloc.h
     - test ! -f $PREFIX/lib/libjemalloc.a
     - test ! -f $PREFIX/lib/libjemalloc_pic.a
-    - test -f $PREFIX/lib/libjemalloc.2.dylib  # [osx]
-    - test -f $PREFIX/include/jemalloc/jemalloc.h
     - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloc test.c
 
 about:
-  home: https://jemalloc.net/
+  home: https://jemalloc.net
   dev_url: https://github.com/jemalloc/jemalloc
-  doc_url: https://jemalloc.net/
+  doc_url: https://jemalloc.net
   license: BSD-2-Clause
   license_family: BSD
   license_file: COPYING
