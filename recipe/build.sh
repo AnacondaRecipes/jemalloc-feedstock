@@ -9,6 +9,9 @@ set -exuo pipefail
 #
 # We disable this feature until we better understand how to avoid loader errors
 # of this type
+
+EXTRA_CONFIGURE_ARGS="--prefix=${PREFIX} --disable-static"
+
 if [[ ${target_platform} =~ linux.* ]]; then
   # Fixes:
   #  * As conda-forge/anaconda patches the glibc headers to have an inline
@@ -16,19 +19,18 @@ if [[ ${target_platform} =~ linux.* ]]; then
   #    a separate name, we cannot override it.
   #  * With the old glibc version/headers, we also run into
   #    https://github.com/jemalloc/jemalloc/issues/1237
-  ./configure --prefix=$PREFIX \
-              --disable-static \
-              --disable-tls \
-              --with-mangling=aligned_alloc:__aligned_alloc \
-              --disable-initial-exec-tls
+  if [[ "${target_platform}" == "linux-aarch64" ]]; then
+    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-lg-page=16"
+  fi
+  ./configure --disable-tls \
+              --disable-initial-exec-tls \
+              --disable-aligned-alloc \
+	            ${EXTRA_CONFIGURE_ARGS}
 elif [[ "${target_platform}" == "osx-arm64" ]]; then
-  ./configure --prefix=$PREFIX \
-              --disable-static \
-              --with-lg-page=14
+  ./configure --with-lg-page=14 ${EXTRA_CONFIGURE_ARGS:-}
 else
-  ./configure --prefix=$PREFIX \
-              --disable-static \
-              --disable-tls
+  ./configure --disable-tls ${EXTRA_CONFIGURE_ARGS:-}
 fi
 make -j${CPU_COUNT}
+make check
 make install
