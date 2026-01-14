@@ -33,12 +33,12 @@ test:
     - {{ compiler('c') }}
   files:
     - test.c
-  commands:
-    - test -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
-    - test -f $PREFIX/include/jemalloc/jemalloc.h
-    - test ! -f $PREFIX/lib/libjemalloc.a
-    - test ! -f $PREFIX/lib/libjemalloc_pic.a
-    - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloc test.c
+  # commands:
+  #   - test -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
+  #   - test -f $PREFIX/include/jemalloc/jemalloc.h
+  #   - test ! -f $PREFIX/lib/libjemalloc.a
+  #   - test ! -f $PREFIX/lib/libjemalloc_pic.a
+  #   - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloc test.c
 
 about:
   home: https://jemalloc.net

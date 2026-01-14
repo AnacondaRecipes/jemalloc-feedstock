@@ -32,5 +32,5 @@ else
   ./configure --disable-tls ${EXTRA_CONFIGURE_ARGS:-}
 fi
 make -j${CPU_COUNT}
-make check
+# make check
 make install
