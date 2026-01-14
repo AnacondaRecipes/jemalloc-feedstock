@@ -10,7 +10,7 @@ set -exuo pipefail
 # We disable this feature until we better understand how to avoid loader errors
 # of this type
 
-EXTRA_CONFIGURE_ARGS="--prefix=${PREFIX} --disable-static"
+EXTRA_CONFIGURE_ARGS=${EXTRA_CONFIGURE_ARGS:-"--prefix=${PREFIX} --disable-static"}
 
 if [[ ${target_platform} =~ linux.* ]]; then
   # Fixes:
