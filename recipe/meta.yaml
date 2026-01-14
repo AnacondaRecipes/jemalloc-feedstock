@@ -2,11 +2,11 @@
 {% set version = "5.3.0" %}
 
 package:
-  name: {{ name }}-split
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://github.com/jemalloc/jemalloc/releases/download/{{ version }}/jemalloc-{{ version }}.tar.bz2
+  url: https://github.com/{{ name }}/{{ name }}/releases/download/{{ version }}/{{ name }}-{{ version }}.tar.bz2
   sha256: 2db82d1e7119df3e71b7640219b6dfe84789bc0537983c3b7ac4f7189aecfeaa
   patches:
     - export-mangled-syms.patch
@@ -14,123 +14,49 @@ source:
 build:
   number: 0
   skip: true  # [win]
+  run_exports:
+    # Symbols were only removed in update from 3 to 4
+    # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
+    - {{ pin_subpackage(name, max_pin=None) }}
 
-outputs:
-  - name: libjemalloc
-    script: build-jemalloc.sh
-    build:
-      run_exports:
-        # Symbols were only removed in update from 3 to 4
-        # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
-        - {{ pin_subpackage('libjemalloc', max_pin=None) }}
-    requirements:
-      build:
-        - make
-        - gnuconfig  # [unix]
-        - {{ stdlib('c') }}
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-      host:
-    test:
-      commands:
-        - test -f $PREFIX/lib/libjemalloc.so.2  # [linux]
-        - test ! -f $PREFIX/lib/libjemalloc.a
-        - test ! -f $PREFIX/lib/libjemalloc_pic.a
-        - test ! -f $PREFIX/bin/jeprof
-        - test -f $PREFIX/lib/libjemalloc.2.dylib  # [osx]
-        - test -f $PREFIX/include/jemalloc/jemalloc.h
+requirements:
+  build:
+    - make
+    - gnuconfig  # [unix]
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
 
-  - name: {{ name }}
-    script: build-jemalloc.sh
-    build:
-      run_exports:
-        # Symbols were only removed in update from 3 to 4
-        # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
-        - {{ pin_subpackage('libjemalloc', max_pin=None) }}
-    requirements:
-      build:
-        - make
-        - gnuconfig  # [unix]
-        - {{ stdlib('c') }}
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-      host:
-        - {{ pin_subpackage('libjemalloc', exact=true) }}
-      run:
-        - {{ pin_subpackage('libjemalloc', exact=true) }}
-    test:
-      requires:
-        - {{ compiler('c') }}
-      files:
-        - test.c
-      commands:
-        - test -f $PREFIX/bin/jeprof
-        - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloc test.c
-
-  - name: lib{{ name }}-local
-    script: build-jemalloc-local.sh
-    build:
-      run_exports:
-        # Symbols were only removed in update from 3 to 4
-        # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
-        - {{ pin_subpackage("libjemalloc-local", max_pin=None) }}
-    requirements:
-      build:
-        - make
-        - gnuconfig  # [unix]
-        - {{ stdlib('c') }}
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-      host:
-    test:
-      commands:
-        - test -f $PREFIX/lib/libjemalloclocal.so.2  # [linux]
-        - test ! -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
-        - test ! -f $PREFIX/lib/libjemalloclocal.a
-        - test ! -f $PREFIX/lib/libjemalloclocal_pic.a
-        - test -f $PREFIX/lib/libjemalloclocal.2.dylib  # [osx]
-        - test -f $PREFIX/include/jemalloc/jemalloclocal.h
-        - test ! -f $PREFIX/jeprof
-
-  - name: {{ name }}-local
-    script: build-jemalloc-local.sh
-    build:
-      run_exports:
-        # Symbols were only removed in update from 3 to 4
-        # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
-        - {{ pin_subpackage("libjemalloc-local", max_pin=None) }}
-    requirements:
-      build:
-        - make
-        - gnuconfig  # [unix]
-        - {{ stdlib('c') }}
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-      host:
-        - {{ pin_subpackage('libjemalloc-local', exact=true) }}
-      run:
-        - {{ pin_subpackage('libjemalloc-local', exact=true) }}
-      run_constrained:
-        - jemalloc <0a0
-    test:
-      requires:
-        - {{ compiler('c') }}
-      files:
-        - test-local.c
-      commands:
-        - test -f $PREFIX/bin/jeprof
-        - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloclocal test-local.c
+test:
+  requires:
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+  files:
+    - test.c
+  commands:
+    - test -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
+    - test -f $PREFIX/include/jemalloc/jemalloc.h
+    - test ! -f $PREFIX/lib/libjemalloc.a
+    - test ! -f $PREFIX/lib/libjemalloc_pic.a
+    - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloc test.c
 
 about:
-  home: http://jemalloc.net
+  home: https://jemalloc.net
   dev_url: https://github.com/jemalloc/jemalloc
+  doc_url: https://jemalloc.net
   license: BSD-2-Clause
+  license_family: BSD
   license_file: COPYING
-  summary: general purpose malloc(3) implementation
+  summary: 'general purpose malloc(3) implementation'
+  description: |
+    jjemalloc is a general purpose malloc(3) implementation that emphasizes fragmentation avoidance and scalable concurrency support. 
+    jemalloc first came into use as the FreeBSD libc allocator in 2005, and since then it has found its way into numerous applications 
+    that rely on its predictable behavior. In 2010 jemalloc development efforts broadened to include developer support features 
+    such as heap profiling and extensive monitoring/tuning hooks. Modern jemalloc releases continue to be integrated back into FreeBSD, 
+    and therefore versatility remains critical. Ongoing development efforts trend toward making jemalloc among the best allocators 
+    for a broad range of demanding applications, and eliminating/mitigating weaknesses that have practical repercussions for real world applications.
 
 extra:
-  feedstock-name: jemalloc
   recipe-maintainers:
     - wesm
     - xhochy
-    - matthiasdiener
