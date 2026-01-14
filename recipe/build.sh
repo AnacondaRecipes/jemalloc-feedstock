@@ -4,7 +4,7 @@ cp $BUILD_PREFIX/share/gnuconfig/config.* ./build-aux
 
 set -exuo pipefail
 
-export EXTRA_CONFIGURE_ARGS="--disable-cxx --with-jemalloc-prefix=local --with-install-suffix=local"
+export EXTRA_CONFIGURE_ARGS="--with-jemalloc-prefix=local --with-install-suffix=local"
 
 # Static TLS has caused users to experience some errors of the form
 # "libjemalloc.so.2: cannot allocate memory in static TLS block"
