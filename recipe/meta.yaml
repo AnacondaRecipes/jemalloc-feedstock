@@ -18,27 +18,31 @@ build:
     # Symbols were only removed in update from 3 to 4
     # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
     - {{ pin_subpackage(name, max_pin=None) }}
+  ignore_run_exports:
+    - libcxx
 
 requirements:
   build:
     - make
     - gnuconfig  # [unix]
-    - {{ stdlib('c') }}
+    # - {{ stdlib('c') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
 
 test:
   requires:
-    - {{ stdlib('c') }}
+    # - {{ stdlib('c') }}
     - {{ compiler('c') }}
   files:
     - test.c
   commands:
-    - test -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
-    - test -f $PREFIX/include/jemalloc/jemalloc.h
-    - test ! -f $PREFIX/lib/libjemalloc.a
-    - test ! -f $PREFIX/lib/libjemalloc_pic.a
-    - $CC -I$PREFIX/include -L$PREFIX/lib -ljemalloc test.c
+    - test -f $PREFIX/lib/libjemalloclocal.so.2  # [linux]
+    - test -f $PREFIX/lib/libjemalloclocal${SHLIB_EXT}
+    - test ! -f $PREFIX/lib/libjemalloclocal.a
+    - test ! -f $PREFIX/lib/libjemalloclocal_pic.a
+    - test -f $PREFIX/lib/libjemalloclocal.2.dylib  # [osx]
+    - test -f $PREFIX/include/jemalloc/jemalloclocal.h
+    - test ! -f $PREFIX/jeprof
 
 about:
   home: https://jemalloc.net
