@@ -14,7 +14,8 @@ source:
 build:
   number: 1
   skip: true  # [win]
-
+  ignore_run_exports:
+    - libcxx
 outputs:
   - name: {{ name }}
     script: build-jemalloc.sh
@@ -23,16 +24,21 @@ outputs:
         # Symbols were only removed in update from 3 to 4
         # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
         - {{ pin_subpackage(name, max_pin=None) }}
+      ignore_run_exports:
+        - libcxx
+        - libstdcxx
+      missing_dso_whitelist:
+        - $RPATH/libstdc++.so.6
     requirements:
       build:
         - make
         - gnuconfig  # [unix]
-        - {{ stdlib('c') }}
+        
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
     test:
       requires:
-        - {{ stdlib('c') }}
+
         - {{ compiler('c') }}
       files:
         - test.c
@@ -50,16 +56,21 @@ outputs:
         # Symbols were only removed in update from 3 to 4
         # https://abi-laboratory.pro/index.php?view=timeline&l=jemalloc
         - {{ pin_subpackage(name + '-local', max_pin=None) }}
+      ignore_run_exports:
+        - libcxx
+        - libstdcxx
+      missing_dso_whitelist:
+        - $RPATH/libstdc++.so.6
     requirements:
       build:
         - make
         - gnuconfig  # [unix]
-        - {{ stdlib('c') }}
+
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
     test:
       requires:
-        - {{ stdlib('c') }}
+
         - {{ compiler('c') }}
       files:
         - test-local.c
