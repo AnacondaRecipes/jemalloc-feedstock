@@ -21,65 +21,65 @@ index 6ff7201..b8bfa6a 100644
  	hpdata_t pageslab;
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
 -
-+	printf("test_empty1\n");
++	fprintf(stderr, "test_empty1\n");
  	edata_t alloc;
  	edata_init_test(&alloc);
 -
-+	printf("test_empty2\n");
++	fprintf(stderr, "test_empty2\n");
  	psset_t psset;
  	psset_init(&psset);
 -
-+	printf("test_empty3\n");
++	fprintf(stderr, "test_empty3\n");
  	/* Empty psset should return fail allocations. */
  	err = test_psset_alloc_reuse(&psset, &alloc, PAGE);
-+	printf("test_empty4\n");
++	fprintf(stderr, "test_empty4\n");
  	expect_true(err, "Empty psset succeeded in an allocation.");
-+	printf("test_empty5\n");
++	fprintf(stderr, "test_empty5\n");
  }
  TEST_END
  
  TEST_BEGIN(test_fill) {
-+	printf("test_fill1\n");
++	fprintf(stderr, "test_fill1\n");
  	bool err;
  
  	hpdata_t pageslab;
 -	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
  
 +	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
-+	printf("test_fill2\n");
++	fprintf(stderr, "test_fill2\n");
  	edata_t alloc[HUGEPAGE_PAGES];
  
  	psset_t psset;
  	psset_init(&psset);
 -
-+	printf("test_fill3\n");
++	fprintf(stderr, "test_fill3\n");
  	edata_init_test(&alloc[0]);
-+	printf("test_fill4\n");
++	fprintf(stderr, "test_fill4\n");
  	test_psset_alloc_new(&psset, &pageslab, &alloc[0], PAGE);
-+	printf("test_fill5\n");
++	fprintf(stderr, "test_fill5\n");
  	for (size_t i = 1; i < HUGEPAGE_PAGES; i++) {
  		edata_init_test(&alloc[i]);
-+		printf("test_fill6\n");
++		fprintf(stderr, "test_fill6\n");
  		err = test_psset_alloc_reuse(&psset, &alloc[i], PAGE);
-+		printf("test_fill7\n");
++		fprintf(stderr, "test_fill7\n");
  		expect_false(err, "Nonempty psset failed page allocation.");
  	}
 -
-+	printf("test_fill8\n");
++	fprintf(stderr, "test_fill8\n");
  	for (size_t i = 0; i < HUGEPAGE_PAGES; i++) {
  		edata_t *edata = &alloc[i];
  		edata_expect(edata, i, 1);
  	}
 -
-+	printf("test_fill9\n");
++	fprintf(stderr, "test_fill9\n");
  	/* The pageslab, and thus psset, should now have no allocations. */
  	edata_t extra_alloc;
  	edata_init_test(&extra_alloc);
-+	printf("test_fill10\n");
++	fprintf(stderr, "test_fill10\n");
  	err = test_psset_alloc_reuse(&psset, &extra_alloc, PAGE);
-+	printf("test_fill11\n");
++	fprintf(stderr, "test_fill11\n");
  	expect_true(err, "Alloc succeeded even though psset should be empty");
-+	printf("test_fill12\n");
++	fprintf(stderr, "test_fill12\n");
  }
  TEST_END
  
