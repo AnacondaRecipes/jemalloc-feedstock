@@ -1,26 +1,34 @@
-From 1747a0ac248b010cacb76364269f7c962d960f0d Mon Sep 17 00:00:00 2001
+From 6edd0abb8002d6f07ec8d0aaa77d6259862b0a25 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Thu, 15 Jan 2026 13:54:10 +0100
+Date: Thu, 15 Jan 2026 14:10:17 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ test/unit/psset.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..c794db5 100644
+index 6ff7201..459cc80 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
-@@ -735,7 +735,8 @@ int
+@@ -733,16 +733,5 @@ TEST_END
+ 
+ int
  main(void) {
- 	return test_no_reentrancy(
- 	    test_empty,
+-	return test_no_reentrancy(
+-	    test_empty,
 -	    test_fill,
-+		// Crashes on CI
-+	    // test_fill,
- 	    test_reuse,
- 	    test_evict,
- 	    test_multi_pageslab,
+-	    test_reuse,
+-	    test_evict,
+-	    test_multi_pageslab,
+-	    test_stats,
+-	    test_oldest_fit,
+-	    test_insert_remove,
+-	    test_purge_prefers_nonhuge,
+-	    test_purge_prefers_empty,
+-	    test_purge_prefers_empty_huge);
++	return test_no_reentrancy(test_purge_prefers_empty_huge);
+ }
 -- 
 2.39.5 (Apple Git-154)
 

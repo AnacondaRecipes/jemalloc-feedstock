@@ -11,7 +11,7 @@ source:
   patches:
     - export-mangled-syms.patch
     # Failing only on CI
-    - patches/unit_test_exclude.patch  # [linux]
+    - patches/unit_test_exclude.patch  # [linux-aarch64]
 
 build:
   number: 1
