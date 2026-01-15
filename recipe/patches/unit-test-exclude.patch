@@ -1,14 +1,47 @@
-From 5ac9e89cbb34a51174cb80f4d484c16198ad5e18 Mon Sep 17 00:00:00 2001
+From eafdad1e7cf07dd4346045542330d3b6bd27535e Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Thu, 15 Jan 2026 15:09:43 +0100
+Date: Thu, 15 Jan 2026 15:30:19 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+ test/src/test.c   |  6 +++++-
+ test/unit/psset.c | 31 ++++++++++++++++++++++---------
+ 2 files changed, 27 insertions(+), 10 deletions(-)
 
+diff --git a/test/src/test.c b/test/src/test.c
+index 4cd803e..5d94980 100644
+--- a/test/src/test.c
++++ b/test/src/test.c
+@@ -1,5 +1,5 @@
+ #include "test/jemalloc_test.h"
+-
++#include <stdio.h>
+ /* Test status state. */
+ 
+ static unsigned		test_count = 0;
+@@ -98,16 +98,20 @@ test_status_string(test_status_t current_status) {
+ 
+ void
+ p_test_init(const char *name) {
++	fprintf(stderr, "p_test_init1\n");
+ 	test_count++;
+ 	test_status = test_status_pass;
+ 	test_name = name;
++	fprintf(stderr, "p_test_init2\n");
+ }
+ 
+ void
+ p_test_fini(void) {
++	fprintf(stderr, "p_test_fini1\n");
+ 	test_counts[test_status]++;
+ 	malloc_printf("%s (%s): %s\n", test_name, reentrancy_t_str(reentrancy),
+ 	    test_status_string(test_status));
++	fprintf(stderr, "p_test_fini2\n");
+ }
+ 
+ static void
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..6f4f69f 100644
+index 6ff7201..6d5ef42 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,3 +1,4 @@
@@ -16,80 +49,89 @@ index 6ff7201..6f4f69f 100644
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
-@@ -105,48 +106,58 @@ TEST_BEGIN(test_empty) {
+@@ -105,52 +106,64 @@ TEST_BEGIN(test_empty) {
  	bool err;
  	hpdata_t pageslab;
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
 -
-+	printf("test_empty1\n");
++	fprintf(stderr, "test_empty1\n");
  	edata_t alloc;
  	edata_init_test(&alloc);
 -
-+	printf("test_empty2\n");
++	fprintf(stderr, "test_empty2\n");
  	psset_t psset;
  	psset_init(&psset);
 -
-+	printf("test_empty3\n");
++	fprintf(stderr, "test_empty3\n");
  	/* Empty psset should return fail allocations. */
  	err = test_psset_alloc_reuse(&psset, &alloc, PAGE);
-+	printf("test_empty4\n");
++	fprintf(stderr, "test_empty4\n");
  	expect_true(err, "Empty psset succeeded in an allocation.");
-+	printf("test_empty5\n");
++	fprintf(stderr, "test_empty5\n");
  }
  TEST_END
  
  TEST_BEGIN(test_fill) {
-+	printf("test_fill1\n");
++	fprintf(stderr, "test_fill1\n");
  	bool err;
  
  	hpdata_t pageslab;
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
 -
-+	printf("test_fill2\n");
++	fprintf(stderr, "test_fill2\n");
  	edata_t alloc[HUGEPAGE_PAGES];
  
  	psset_t psset;
  	psset_init(&psset);
 -
-+	printf("test_fill3\n");
++	fprintf(stderr, "test_fill3\n");
  	edata_init_test(&alloc[0]);
-+	printf("test_fill4\n");
++	fprintf(stderr, "test_fill4\n");
  	test_psset_alloc_new(&psset, &pageslab, &alloc[0], PAGE);
-+	printf("test_fill5\n");
++	fprintf(stderr, "test_fill5\n");
  	for (size_t i = 1; i < HUGEPAGE_PAGES; i++) {
  		edata_init_test(&alloc[i]);
-+		printf("test_fill6\n");
++		fprintf(stderr, "test_fill6\n");
  		err = test_psset_alloc_reuse(&psset, &alloc[i], PAGE);
-+		printf("test_fill7\n");
++		fprintf(stderr, "test_fill7\n");
  		expect_false(err, "Nonempty psset failed page allocation.");
  	}
 -
-+	printf("test_fill8\n");
++	fprintf(stderr, "test_fill8\n");
  	for (size_t i = 0; i < HUGEPAGE_PAGES; i++) {
  		edata_t *edata = &alloc[i];
  		edata_expect(edata, i, 1);
  	}
 -
-+	printf("test_fill9\n");
++	fprintf(stderr, "test_fill9\n");
  	/* The pageslab, and thus psset, should now have no allocations. */
  	edata_t extra_alloc;
  	edata_init_test(&extra_alloc);
-+	printf("test_fill10\n");
++	fprintf(stderr, "test_fill10\n");
  	err = test_psset_alloc_reuse(&psset, &extra_alloc, PAGE);
-+	printf("test_fill11\n");
++	fprintf(stderr, "test_fill11\n");
  	expect_true(err, "Alloc succeeded even though psset should be empty");
-+	printf("test_fill12\n");
++	fprintf(stderr, "test_fill12\n");
  }
  TEST_END
  
-@@ -734,7 +745,6 @@ TEST_END
+ TEST_BEGIN(test_reuse) {
++	fprintf(stderr, "test_reuse\n");
++
+ 	bool err;
+ 	hpdata_t *ps;
+ 
+@@ -734,8 +747,8 @@ TEST_END
  int
  main(void) {
  	return test_no_reentrancy(
 -	    test_empty,
- 	    test_fill,
+-	    test_fill,
++		test_empty,
++	    // test_fill,
  	    test_reuse,
  	    test_evict,
+ 	    test_multi_pageslab,
 -- 
 2.39.5 (Apple Git-154)
 
