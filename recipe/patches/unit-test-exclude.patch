@@ -1,27 +1,30 @@
-From bfb940c71e5a4654c18c22241c154b5336134d46 Mon Sep 17 00:00:00 2001
+From 1e3ee166cf905d3bf665c2682f2c77d9e6263fa0 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Thu, 15 Jan 2026 17:37:16 +0100
+Date: Thu, 15 Jan 2026 19:09:51 +0100
 Subject: [PATCH] patch
 
 ---
- Makefile.in | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Makefile.in | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/Makefile.in b/Makefile.in
-index 1193cd8..157e2f6 100644
+index 1193cd8..e810951 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -760,3 +760,9 @@ $(objroot)config.stamp : $(cfgoutputs_in) $(cfghdrs_in) $(srcroot)configure
- $(cfgoutputs_out) $(cfghdrs_out) : $(objroot)config.stamp
- 	@true
- endif
+@@ -439,6 +439,13 @@ $(C_JET_SYM_OBJS): CPPFLAGS += -DJEMALLOC_JET -DJEMALLOC_NO_PRIVATE_NAMESPACE
+ $(C_JET_SYMS): $(objroot)src/%.jet.sym: $(objroot)src/%.jet.sym.$(O)
+ $(C_JET_OBJS): $(objroot)src/%.jet.$(O): $(srcroot)src/%.c
+ $(C_JET_OBJS): CPPFLAGS += -DJEMALLOC_JET
 +
-+#-------------------------------------------------------------------------------
-+# Override CFLAGS for unit/integration/analyze/stress tests
-+# Use -Og and safe flags for predictable memory ordering
-+$(TESTS_OBJS):
-+	CFLAGS := -Og -g -fno-builtin -fno-strict-aliasing -fno-tree-sra -fno-reorder-blocks
-\ No newline at end of file
++TEST_UNIT_CFLAGS := $(filter-out -O0 -O1 -O2 -O3 -Ofast -Og,$(CFLAGS)) \
++                    -O0 -g -fno-builtin -fno-strict-aliasing -fno-tree-sra \
++                    -fno-reorder-blocks -fno-inline -fno-omit-frame-pointer
++
++$(C_TESTLIB_UNIT_OBJS): CFLAGS := $(TEST_UNIT_CFLAGS)
++$(TESTS_UNIT_OBJS): CFLAGS := $(TEST_UNIT_CFLAGS)
+ $(C_TESTLIB_UNIT_OBJS): $(objroot)test/src/%.unit.$(O): $(srcroot)test/src/%.c
+ $(C_TESTLIB_UNIT_OBJS): CPPFLAGS += -DJEMALLOC_UNIT_TEST
+ $(C_TESTLIB_INTEGRATION_OBJS): $(objroot)test/src/%.integration.$(O): $(srcroot)test/src/%.c
 -- 
 2.39.5 (Apple Git-154)
 
