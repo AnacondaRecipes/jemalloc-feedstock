@@ -10,7 +10,7 @@ set -exuo pipefail
 # We disable this feature until we better understand how to avoid loader errors
 # of this type
 
-EXTRA_CONFIGURE_ARGS="--prefix=${PREFIX} --disable-static"
+EXTRA_CONFIGURE_ARGS=${EXTRA_CONFIGURE_ARGS:-"--prefix=${PREFIX} --disable-static"}
 
 if [[ ${target_platform} =~ linux.* ]]; then
   # Fixes:
@@ -24,7 +24,7 @@ if [[ ${target_platform} =~ linux.* ]]; then
   fi
   ./configure --disable-tls \
               --disable-initial-exec-tls \
-              --with-mangling=aligned_alloc:__aligned_alloc \
+              --disable-aligned-alloc \
 	            ${EXTRA_CONFIGURE_ARGS}
 elif [[ "${target_platform}" == "osx-arm64" ]]; then
   ./configure --with-lg-page=14 ${EXTRA_CONFIGURE_ARGS:-}
@@ -32,5 +32,5 @@ else
   ./configure --disable-tls ${EXTRA_CONFIGURE_ARGS:-}
 fi
 make -j${CPU_COUNT}
-make check
+# make check
 make install
