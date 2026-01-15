@@ -14,7 +14,7 @@ source:
     # During debugging, it was discovered that test functions in one file are being called on unaligned addresses. 
     # It seems that some undefined behavior in the test code is affecting memory alignment. 
     # This is hard to debug since it only fails on CI, and only on Linux aarch64.
-    - patches/unit-test-exclude.patch  # [linux-aarch64]
+    - patches/unit-test-exclude.patch  # [linux and aarch64]
 
 build:
   number: 1
