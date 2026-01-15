@@ -169,7 +169,7 @@ index 6ff7201..df26461 100644
  	hpdata_t pageslab;
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
 -
-+	f	printf(stderr, "test_fill2\n");
++	fprintf(stderr, "test_fill2\n");
  	edata_t alloc[HUGEPAGE_PAGES];
  
  	psset_t psset;
