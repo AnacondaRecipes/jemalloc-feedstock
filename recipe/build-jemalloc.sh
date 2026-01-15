@@ -24,7 +24,7 @@ if [[ ${target_platform} =~ linux.* ]]; then
   fi
   ./configure --disable-tls \
               --disable-initial-exec-tls \
-              --with-mangling=aligned_alloc:__aligned_alloc \
+              # --with-mangling=aligned_alloc:__aligned_alloc \
 	            ${EXTRA_CONFIGURE_ARGS}
 elif [[ "${target_platform}" == "osx-arm64" ]]; then
   ./configure --with-lg-page=14 ${EXTRA_CONFIGURE_ARGS:-}
