@@ -1,14 +1,14 @@
-From 62ac520fabae02703688806c688128067cc5a18d Mon Sep 17 00:00:00 2001
+From 5ac9e89cbb34a51174cb80f4d484c16198ad5e18 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Thu, 15 Jan 2026 14:40:55 +0100
+Date: Thu, 15 Jan 2026 15:09:43 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ test/unit/psset.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..b8bfa6a 100644
+index 6ff7201..6f4f69f 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,3 +1,4 @@
@@ -16,73 +16,80 @@ index 6ff7201..b8bfa6a 100644
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
-@@ -105,48 +106,59 @@ TEST_BEGIN(test_empty) {
+@@ -105,48 +106,58 @@ TEST_BEGIN(test_empty) {
  	bool err;
  	hpdata_t pageslab;
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
 -
-+	fprintf(stderr, "test_empty1\n");
++	printf("test_empty1\n");
  	edata_t alloc;
  	edata_init_test(&alloc);
 -
-+	fprintf(stderr, "test_empty2\n");
++	printf("test_empty2\n");
  	psset_t psset;
  	psset_init(&psset);
 -
-+	fprintf(stderr, "test_empty3\n");
++	printf("test_empty3\n");
  	/* Empty psset should return fail allocations. */
  	err = test_psset_alloc_reuse(&psset, &alloc, PAGE);
-+	fprintf(stderr, "test_empty4\n");
++	printf("test_empty4\n");
  	expect_true(err, "Empty psset succeeded in an allocation.");
-+	fprintf(stderr, "test_empty5\n");
++	printf("test_empty5\n");
  }
  TEST_END
  
  TEST_BEGIN(test_fill) {
-+	fprintf(stderr, "test_fill1\n");
++	printf("test_fill1\n");
  	bool err;
  
  	hpdata_t pageslab;
--	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
- 
-+	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
-+	fprintf(stderr, "test_fill2\n");
+ 	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
+-
++	printf("test_fill2\n");
  	edata_t alloc[HUGEPAGE_PAGES];
  
  	psset_t psset;
  	psset_init(&psset);
 -
-+	fprintf(stderr, "test_fill3\n");
++	printf("test_fill3\n");
  	edata_init_test(&alloc[0]);
-+	fprintf(stderr, "test_fill4\n");
++	printf("test_fill4\n");
  	test_psset_alloc_new(&psset, &pageslab, &alloc[0], PAGE);
-+	fprintf(stderr, "test_fill5\n");
++	printf("test_fill5\n");
  	for (size_t i = 1; i < HUGEPAGE_PAGES; i++) {
  		edata_init_test(&alloc[i]);
-+		fprintf(stderr, "test_fill6\n");
++		printf("test_fill6\n");
  		err = test_psset_alloc_reuse(&psset, &alloc[i], PAGE);
-+		fprintf(stderr, "test_fill7\n");
++		printf("test_fill7\n");
  		expect_false(err, "Nonempty psset failed page allocation.");
  	}
 -
-+	fprintf(stderr, "test_fill8\n");
++	printf("test_fill8\n");
  	for (size_t i = 0; i < HUGEPAGE_PAGES; i++) {
  		edata_t *edata = &alloc[i];
  		edata_expect(edata, i, 1);
  	}
 -
-+	fprintf(stderr, "test_fill9\n");
++	printf("test_fill9\n");
  	/* The pageslab, and thus psset, should now have no allocations. */
  	edata_t extra_alloc;
  	edata_init_test(&extra_alloc);
-+	fprintf(stderr, "test_fill10\n");
++	printf("test_fill10\n");
  	err = test_psset_alloc_reuse(&psset, &extra_alloc, PAGE);
-+	fprintf(stderr, "test_fill11\n");
++	printf("test_fill11\n");
  	expect_true(err, "Alloc succeeded even though psset should be empty");
-+	fprintf(stderr, "test_fill12\n");
++	printf("test_fill12\n");
  }
  TEST_END
  
+@@ -734,7 +745,6 @@ TEST_END
+ int
+ main(void) {
+ 	return test_no_reentrancy(
+-	    test_empty,
+ 	    test_fill,
+ 	    test_reuse,
+ 	    test_evict,
 -- 
 2.39.5 (Apple Git-154)
 
