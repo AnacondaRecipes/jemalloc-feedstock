@@ -9,9 +9,9 @@ source:
   url: https://github.com/{{ name }}/{{ name }}/releases/download/{{ version }}/{{ name }}-{{ version }}.tar.bz2
   sha256: 2db82d1e7119df3e71b7640219b6dfe84789bc0537983c3b7ac4f7189aecfeaa
   patches:
-    - export-mangled-syms.patch
+    - patches/export-mangled-syms.patch
     # Failing only on CI
-    - patches/unit_test_exclude.patch  # [linux-aarch64]
+    - patches/unit-test-exclude.patch
 
 build:
   number: 1
