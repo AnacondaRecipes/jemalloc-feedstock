@@ -1,15 +1,15 @@
-From eafdad1e7cf07dd4346045542330d3b6bd27535e Mon Sep 17 00:00:00 2001
+From 40cfea60a168beeb892cbfe83e8cc9e56f616756 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Thu, 15 Jan 2026 15:30:19 +0100
+Date: Thu, 15 Jan 2026 15:53:53 +0100
 Subject: [PATCH] patch
 
 ---
- test/src/test.c   |  6 +++++-
+ test/src/test.c   | 28 +++++++++++++++++++++++-----
  test/unit/psset.c | 31 ++++++++++++++++++++++---------
- 2 files changed, 27 insertions(+), 10 deletions(-)
+ 2 files changed, 45 insertions(+), 14 deletions(-)
 
 diff --git a/test/src/test.c b/test/src/test.c
-index 4cd803e..5d94980 100644
+index 4cd803e..ec7e170 100644
 --- a/test/src/test.c
 +++ b/test/src/test.c
 @@ -1,5 +1,5 @@
@@ -40,8 +40,99 @@ index 4cd803e..5d94980 100644
  }
  
  static void
+@@ -127,7 +131,7 @@ check_global_slow(test_status_t *status) {
+ static test_status_t
+ p_test_impl(bool do_malloc_init, bool do_reentrant, test_t *t, va_list ap) {
+ 	test_status_t ret;
+-
++	fprintf(stderr, "p_test_impl1\n");
+ 	if (do_malloc_init) {
+ 		/*
+ 		 * Make sure initialization occurs prior to running tests.
+@@ -135,14 +139,16 @@ p_test_impl(bool do_malloc_init, bool do_reentrant, test_t *t, va_list ap) {
+ 		 * prior to triggering initialization as a side effect of
+ 		 * calling into the public API.
+ 		 */
++		fprintf(stderr, "p_test_impl1.1\n");
+ 		if (nallocx(1, 0) == 0) {
+ 			malloc_printf("Initialization error");
+ 			return test_status_fail;
+ 		}
+ 	}
+-
++	fprintf(stderr, "p_test_impl2\n");
+ 	ret = test_status_pass;
+ 	for (; t != NULL; t = va_arg(ap, test_t *)) {
++		fprintf(stderr, "p_test_impl3\n");
+ 		/* Non-reentrant run. */
+ 		reentrancy = non_reentrant;
+ 		test_hooks_arena_new_hook = test_hooks_libc_hook = NULL;
+@@ -150,6 +156,7 @@ p_test_impl(bool do_malloc_init, bool do_reentrant, test_t *t, va_list ap) {
+ 		if (test_status > ret) {
+ 			ret = test_status;
+ 		}
++		fprintf(stderr, "p_test_impl4\n");
+ 		check_global_slow(&ret);
+ 		/* Reentrant run. */
+ 		if (do_reentrant) {
+@@ -161,7 +168,7 @@ p_test_impl(bool do_malloc_init, bool do_reentrant, test_t *t, va_list ap) {
+ 				ret = test_status;
+ 			}
+ 			check_global_slow(&ret);
+-
++			fprintf(stderr, "p_test_impl5\n");
+ 			reentrancy = arena_new_reentrant;
+ 			test_hooks_libc_hook = NULL;
+ 			test_hooks_arena_new_hook = &arena_new_reentrancy_hook;
+@@ -191,7 +198,9 @@ p_test(test_t *t, ...) {
+ 
+ 	ret = test_status_pass;
+ 	va_start(ap, t);
++	fprintf(stderr, "p_test(test_t *t, ...) {1\n");
+ 	ret = p_test_impl(true, true, t, ap);
++	fprintf(stderr, "p_test(test_t *t, ...) {2\n");
+ 	va_end(ap);
+ 
+ 	return ret;
+@@ -199,14 +208,21 @@ p_test(test_t *t, ...) {
+ 
+ test_status_t
+ p_test_no_reentrancy(test_t *t, ...) {
++	fprintf(stderr, "p_test_no_reentrancy1\n");
+ 	test_status_t ret;
+ 	va_list ap;
+ 
+ 	ret = test_status_pass;
++	fprintf(stderr, "p_test_no_reentrancy2\n");
++
+ 	va_start(ap, t);
++	fprintf(stderr, "p_test_no_reentrancy3\n");
++
+ 	ret = p_test_impl(true, false, t, ap);
+-	va_end(ap);
++	fprintf(stderr, "p_test_no_reentrancy4\n");
+ 
++	va_end(ap);
++	fprintf(stderr, "p_test_no_reentrancy5\n");
+ 	return ret;
+ }
+ 
+@@ -217,11 +233,13 @@ p_test_no_malloc_init(test_t *t, ...) {
+ 
+ 	ret = test_status_pass;
+ 	va_start(ap, t);
++	fprintf(stderr, "p_test_no_malloc_init1\n");
+ 	/*
+ 	 * We also omit reentrancy from bootstrapping tests, since we don't
+ 	 * (yet) care about general reentrancy during bootstrapping.
+ 	 */
+ 	ret = p_test_impl(false, false, t, ap);
++	fprintf(stderr, "p_test_no_malloc_init2\n");
+ 	va_end(ap);
+ 
+ 	return ret;
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..6d5ef42 100644
+index 6ff7201..df26461 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,3 +1,4 @@
@@ -78,7 +169,7 @@ index 6ff7201..6d5ef42 100644
  	hpdata_t pageslab;
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
 -
-+	fprintf(stderr, "test_fill2\n");
++	f	printf(stderr, "test_fill2\n");
  	edata_t alloc[HUGEPAGE_PAGES];
  
  	psset_t psset;
