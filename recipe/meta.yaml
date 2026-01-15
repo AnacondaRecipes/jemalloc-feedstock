@@ -10,8 +10,11 @@ source:
   sha256: 2db82d1e7119df3e71b7640219b6dfe84789bc0537983c3b7ac4f7189aecfeaa
   patches:
     - patches/export-mangled-syms.patch
-    # Failing only on CI
-    - patches/unit-test-exclude.patch
+    # Exclude tests that cause crashes in test phase.
+    # During debugging, it was discovered that test functions in one file are being called on unaligned addresses. 
+    # It seems that some undefined behavior in the test code is affecting memory alignment. 
+    # This is hard to debug since it only fails on CI, and only on Linux aarch64.
+    - patches/unit-test-exclude.patch  # [linux-aarch64]
 
 build:
   number: 1
