@@ -1,24 +1,27 @@
-From 5aad3b12cde72d94800a4eb1e42c7a29534de5de Mon Sep 17 00:00:00 2001
+From bfb940c71e5a4654c18c22241c154b5336134d46 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Thu, 15 Jan 2026 17:24:42 +0100
+Date: Thu, 15 Jan 2026 17:37:16 +0100
 Subject: [PATCH] patch
 
 ---
- Makefile.in | 1 +
- 1 file changed, 1 insertion(+)
+ Makefile.in | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/Makefile.in b/Makefile.in
-index 1193cd8..62c13e4 100644
+index 1193cd8..157e2f6 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -457,6 +457,7 @@ $(TESTS_STRESS_OBJS): CPPFLAGS += -DJEMALLOC_STRESS_TEST
- $(TESTS_OBJS): $(objroot)test/%.$(O): $(srcroot)test/%.c
- $(TESTS_CPP_OBJS): $(objroot)test/%.$(O): $(srcroot)test/%.cpp
- $(TESTS_OBJS): CPPFLAGS += -I$(srcroot)test/include -I$(objroot)test/include
-+$(TESTS_OBJS): CFLAGS += -Og -fno-builtin -fno-strict-aliasing -fno-tree-sra -fno-reorder-blocks
- $(TESTS_CPP_OBJS): CPPFLAGS += -I$(srcroot)test/include -I$(objroot)test/include
- ifneq ($(IMPORTLIB),$(SO))
- $(CPP_OBJS) $(C_SYM_OBJS) $(C_OBJS) $(C_JET_SYM_OBJS) $(C_JET_OBJS): CPPFLAGS += -DDLLEXPORT
+@@ -760,3 +760,9 @@ $(objroot)config.stamp : $(cfgoutputs_in) $(cfghdrs_in) $(srcroot)configure
+ $(cfgoutputs_out) $(cfghdrs_out) : $(objroot)config.stamp
+ 	@true
+ endif
++
++#-------------------------------------------------------------------------------
++# Override CFLAGS for unit/integration/analyze/stress tests
++# Use -Og and safe flags for predictable memory ordering
++$(TESTS_OBJS):
++	CFLAGS := -Og -g -fno-builtin -fno-strict-aliasing -fno-tree-sra -fno-reorder-blocks
+\ No newline at end of file
 -- 
 2.39.5 (Apple Git-154)
 
