@@ -27,7 +27,7 @@ index 6ff7201..d46290d 100644
 -	    test_purge_prefers_nonhuge,
 -	    test_purge_prefers_empty,
 -	    test_purge_prefers_empty_huge);
-+	status = test_no_reentrancy(test_reuse);
++	test_status_t status = test_no_reentrancy(test_reuse);
 +	if (status != test_status_pass) {
 +		return status;
 +	}
