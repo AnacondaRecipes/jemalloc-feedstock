@@ -16,21 +16,21 @@ index 6ff7201..9407d1f 100644
 +#undef LG_HUGEPAGE
 +#undef LG_PAGE
 +#define  LG_PAGE     12   // 4 KB
-+#define LG_HUGEPAGE  17   // 128 KB
++#define LG_HUGEPAGE  24   // 128 KB
 +
  #include "test/jemalloc_test.h"
  
 +#undef LG_HUGEPAGE
 +#undef LG_PAGE
 +#define  LG_PAGE     12   // 4 KB
-+#define LG_HUGEPAGE  17   // 128 KB
++#define LG_HUGEPAGE  24   // 128 KB
  #include "jemalloc/internal/psset.h"
  
 +
 +#undef LG_HUGEPAGE
 +#undef LG_PAGE
 +#define  LG_PAGE     12   // 4 KB
-+#define LG_HUGEPAGE  17   // 128 KB
++#define LG_HUGEPAGE  24   // 128 KB
 +
  #define PAGESLAB_ADDR ((void *)(1234 * HUGEPAGE))
  #define PAGESLAB_AGE 5678
