@@ -1,14 +1,14 @@
-From 097828c667bb047d06fde5191497cbda75ca9a78 Mon Sep 17 00:00:00 2001
+From be802c12e2288f8fdccabebf3644ea10d2ad3c0a Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 12:48:30 +0100
+Date: Fri, 16 Jan 2026 13:10:36 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 117 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 78 insertions(+), 39 deletions(-)
+ test/unit/psset.c | 111 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 75 insertions(+), 36 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..8c8ed43 100644
+index 6ff7201..07073f9 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,3 +1,4 @@
@@ -16,23 +16,16 @@ index 6ff7201..8c8ed43 100644
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
-@@ -35,16 +36,16 @@ test_psset_alloc_new(psset_t *psset, hpdata_t *ps, edata_t *r_edata,
+@@ -39,12 +40,12 @@ test_psset_alloc_new(psset_t *psset, hpdata_t *ps, edata_t *r_edata,
+ 	psset_update_begin(psset, ps);
  
- 	test_psset_fake_purge(ps);
- 
--	psset_insert(psset, ps);
--	psset_update_begin(psset, ps);
-+	// psset_insert(psset, ps);
-+	// psset_update_begin(psset, ps);
- 
--        void *addr = hpdata_reserve_alloc(ps, size);
+         void *addr = hpdata_reserve_alloc(ps, size);
 -        edata_init(r_edata, edata_arena_ind_get(r_edata), addr, size,
 -	    /* slab */ false, SC_NSIZES, /* sn */ 0, extent_state_active,
 -            /* zeroed */ false, /* committed */ true, EXTENT_PAI_HPA,
 -            EXTENT_NOT_HEAD);
 -        edata_ps_set(r_edata, ps);
 -	psset_update_end(psset, ps);
-+    //     void *addr = hpdata_reserve_alloc(ps, size);
 +    //     edata_init(r_edata, edata_arena_ind_get(r_edata), addr, size,
 +	//     /* slab */ false, SC_NSIZES, /* sn */ 0, extent_state_active,
 +    //         /* zeroed */ false, /* committed */ true, EXTENT_PAI_HPA,
