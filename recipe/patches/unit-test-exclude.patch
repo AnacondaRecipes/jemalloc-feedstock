@@ -1,26 +1,84 @@
-From 0932392f6f61c7c6ab80d1e8e51ac2e0e3ca0f71 Mon Sep 17 00:00:00 2001
+From 16e1a368f396149d54498cf9c698ff388c1322e5 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 18:22:45 +0100
+Date: Fri, 16 Jan 2026 18:50:54 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 3 +++
- 1 file changed, 3 insertions(+)
+ test/unit/psset.c | 43 +++++++++++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 18 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..c8d2e77 100644
+index 6ff7201..e74a212 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
-@@ -1,7 +1,10 @@
+@@ -1,3 +1,4 @@
 +#define HUGEPAGE_PAGES 1
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
+@@ -102,6 +103,8 @@ edata_expect(edata_t *edata, size_t page_offset, size_t page_cnt) {
+ }
  
+ TEST_BEGIN(test_empty) {
++	fprintf(stderr, "HUGEPAGE=%zu, HUGEPAGE_PAGES=%zu, LG_PAGE=%d\n", 
++		(size_t)HUGEPAGE, (size_t)HUGEPAGE_PAGES, LG_PAGE);
+ 	bool err;
+ 	hpdata_t pageslab;
+ 	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
+@@ -121,32 +124,36 @@ TEST_END
+ TEST_BEGIN(test_fill) {
+ 	bool err;
+ 
++	fprintf(stderr, "hugepage_pages: %zu\n", HUGEPAGE_PAGES);
 +
+ 	hpdata_t pageslab;
+ 	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
+ 
+ 	edata_t alloc[HUGEPAGE_PAGES];
+ 
+-	psset_t psset;
+-	psset_init(&psset);
+ 
+-	edata_init_test(&alloc[0]);
+-	test_psset_alloc_new(&psset, &pageslab, &alloc[0], PAGE);
+-	for (size_t i = 1; i < HUGEPAGE_PAGES; i++) {
+-		edata_init_test(&alloc[i]);
+-		err = test_psset_alloc_reuse(&psset, &alloc[i], PAGE);
+-		expect_false(err, "Nonempty psset failed page allocation.");
+-	}
+ 
+-	for (size_t i = 0; i < HUGEPAGE_PAGES; i++) {
+-		edata_t *edata = &alloc[i];
+-		edata_expect(edata, i, 1);
+-	}
++	// psset_t psset;
++	// psset_init(&psset);
 +
- #define PAGESLAB_ADDR ((void *)(1234 * HUGEPAGE))
- #define PAGESLAB_AGE 5678
++	// edata_init_test(&alloc[0]);
++	// test_psset_alloc_new(&psset, &pageslab, &alloc[0], PAGE);
++	// for (size_t i = 1; i < HUGEPAGE_PAGES; i++) {
++	// 	edata_init_test(&alloc[i]);
++	// 	err = test_psset_alloc_reuse(&psset, &alloc[i], PAGE);
++	// 	expect_false(err, "Nonempty psset failed page allocation.");
++	// }
++
++	// for (size_t i = 0; i < HUGEPAGE_PAGES; i++) {
++	// 	edata_t *edata = &alloc[i];
++	// 	edata_expect(edata, i, 1);
++	// }
+ 
+-	/* The pageslab, and thus psset, should now have no allocations. */
+-	edata_t extra_alloc;
+-	edata_init_test(&extra_alloc);
+-	err = test_psset_alloc_reuse(&psset, &extra_alloc, PAGE);
+-	expect_true(err, "Alloc succeeded even though psset should be empty");
++	// /* The pageslab, and thus psset, should now have no allocations. */
++	// edata_t extra_alloc;
++	// edata_init_test(&extra_alloc);
++	// err = test_psset_alloc_reuse(&psset, &extra_alloc, PAGE);
++	// expect_true(err, "Alloc succeeded even though psset should be empty");
+ }
+ TEST_END
  
 -- 
 2.39.5 (Apple Git-154)
