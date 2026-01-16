@@ -20,7 +20,7 @@ if [[ ${target_platform} =~ linux.* ]]; then
   #  * With the old glibc version/headers, we also run into
   #    https://github.com/jemalloc/jemalloc/issues/1237
   if [[ "${target_platform}" == "linux-aarch64" ]]; then
-    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-lg-page=16"
+    EXTRA_CONFIGURE_ARGS="${EXTRA_CONFIGURE_ARGS} --with-lg-page=8"
   fi
   ./configure --disable-tls \
               --disable-initial-exec-tls \
