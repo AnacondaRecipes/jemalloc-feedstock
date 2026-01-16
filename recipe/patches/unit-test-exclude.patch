@@ -12,7 +12,7 @@ index 6ff7201..c8d2e77 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,7 +1,10 @@
-+#define HUGEPAGE_PAGES 32
++#define HUGEPAGE_PAGES 1
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
