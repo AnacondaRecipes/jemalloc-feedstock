@@ -18,7 +18,7 @@ index 6ff7201..d7db75d 100644
  #include "jemalloc/internal/psset.h"
  
 +#undef HUGEPAGE_PAGES
-+#define HUGEPAGE_PAGES 8
++#define HUGEPAGE_PAGES 512
 +
  #define PAGESLAB_ADDR ((void *)(1234 * HUGEPAGE))
  #define PAGESLAB_AGE 5678
