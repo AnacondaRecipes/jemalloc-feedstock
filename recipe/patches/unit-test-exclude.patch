@@ -1,14 +1,14 @@
-From 2fbd07afcb02d1cba51930d787fb65fdee10356c Mon Sep 17 00:00:00 2001
+From ce886a3389e931f3dbe675032519ee521cc23b7e Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 17:09:13 +0100
+Date: Fri, 16 Jan 2026 17:23:11 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 107 ++++++++++++++++++++++++----------------------
- 1 file changed, 57 insertions(+), 50 deletions(-)
+ test/unit/psset.c | 94 +++++++++++++++++++++++++----------------------
+ 1 file changed, 50 insertions(+), 44 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..e2cdaaa 100644
+index 6ff7201..8ce27e9 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -31,20 +31,34 @@ test_psset_fake_purge(hpdata_t *ps) {
@@ -60,19 +60,17 @@ index 6ff7201..e2cdaaa 100644
  }
  
  static bool
-@@ -121,32 +135,34 @@ TEST_END
- TEST_BEGIN(test_fill) {
- 	bool err;
+@@ -124,29 +138,30 @@ TEST_BEGIN(test_fill) {
+ 	hpdata_t pageslab;
+ 	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
  
--	hpdata_t pageslab;
--	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
--
--	edata_t alloc[HUGEPAGE_PAGES];
++	fprintf(stderr, "test_psset_alloc_new edata size: %zu hugepage_pages: %zu\n", sizeof(edata_t), HUGEPAGE_PAGES);
+ 	edata_t alloc[HUGEPAGE_PAGES];
 -
 -	psset_t psset;
 -	psset_init(&psset);
 -
--	edata_init_test(&alloc[0]);
+ 	edata_init_test(&alloc[0]);
 -	test_psset_alloc_new(&psset, &pageslab, &alloc[0], PAGE);
 -	for (size_t i = 1; i < HUGEPAGE_PAGES; i++) {
 -		edata_init_test(&alloc[i]);
@@ -84,20 +82,12 @@ index 6ff7201..e2cdaaa 100644
 -		edata_t *edata = &alloc[i];
 -		edata_expect(edata, i, 1);
 -	}
--
+ 
 -	/* The pageslab, and thus psset, should now have no allocations. */
 -	edata_t extra_alloc;
 -	edata_init_test(&extra_alloc);
 -	err = test_psset_alloc_reuse(&psset, &extra_alloc, PAGE);
 -	expect_true(err, "Alloc succeeded even though psset should be empty");
-+	// hpdata_t pageslab;
-+	// hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
-+
-+	fprintf(stderr, "test_psset_alloc_new edata size: %zu hugepage_pages: %zu\n", sizeof(edata_t), HUGEPAGE_PAGES);
-+	// edata_t alloc[HUGEPAGE_PAGES];
-+	
-+	// edata_init_test(&alloc[0]);
-+
 +	// psset_t psset;
 +	// psset_init(&psset);
 +
@@ -121,7 +111,7 @@ index 6ff7201..e2cdaaa 100644
  }
  TEST_END
  
-@@ -735,14 +751,5 @@ int
+@@ -735,14 +750,5 @@ int
  main(void) {
  	return test_no_reentrancy(
  	    test_empty,
