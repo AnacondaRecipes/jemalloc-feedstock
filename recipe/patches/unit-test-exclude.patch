@@ -1,14 +1,14 @@
-From be802c12e2288f8fdccabebf3644ea10d2ad3c0a Mon Sep 17 00:00:00 2001
+From bfa78341ff015650f2f46d0002a7de2697f4fea5 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 13:10:36 +0100
+Date: Fri, 16 Jan 2026 13:23:57 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 111 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 75 insertions(+), 36 deletions(-)
+ test/unit/psset.c | 105 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 72 insertions(+), 33 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..07073f9 100644
+index 6ff7201..33b3222 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,3 +1,4 @@
@@ -16,20 +16,18 @@ index 6ff7201..07073f9 100644
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
-@@ -39,12 +40,12 @@ test_psset_alloc_new(psset_t *psset, hpdata_t *ps, edata_t *r_edata,
+@@ -38,13 +39,13 @@ test_psset_alloc_new(psset_t *psset, hpdata_t *ps, edata_t *r_edata,
+ 	psset_insert(psset, ps);
  	psset_update_begin(psset, ps);
  
-         void *addr = hpdata_reserve_alloc(ps, size);
--        edata_init(r_edata, edata_arena_ind_get(r_edata), addr, size,
--	    /* slab */ false, SC_NSIZES, /* sn */ 0, extent_state_active,
--            /* zeroed */ false, /* committed */ true, EXTENT_PAI_HPA,
--            EXTENT_NOT_HEAD);
+-        void *addr = hpdata_reserve_alloc(ps, size);
++    void *addr = hpdata_reserve_alloc(ps, size);
+         edata_init(r_edata, edata_arena_ind_get(r_edata), addr, size,
+ 	    /* slab */ false, SC_NSIZES, /* sn */ 0, extent_state_active,
+             /* zeroed */ false, /* committed */ true, EXTENT_PAI_HPA,
+             EXTENT_NOT_HEAD);
 -        edata_ps_set(r_edata, ps);
 -	psset_update_end(psset, ps);
-+    //     edata_init(r_edata, edata_arena_ind_get(r_edata), addr, size,
-+	//     /* slab */ false, SC_NSIZES, /* sn */ 0, extent_state_active,
-+    //         /* zeroed */ false, /* committed */ true, EXTENT_PAI_HPA,
-+    //         EXTENT_NOT_HEAD);
 +    //     edata_ps_set(r_edata, ps);
 +	// psset_update_end(psset, ps);
  }
