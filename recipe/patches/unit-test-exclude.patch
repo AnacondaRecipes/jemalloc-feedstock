@@ -1,28 +1,37 @@
-From f350b8a632cb2806d30a615c9e3056abbd5e15b5 Mon Sep 17 00:00:00 2001
+From 3e542685d1ebd0934de56f1736fcc537d7566cb8 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 19:02:43 +0100
+Date: Fri, 16 Jan 2026 19:12:24 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ test/unit/psset.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..afcfa7d 100644
+index 6ff7201..d7db75d 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,7 +1,11 @@
-+#undef HUGEPAGE_PAGES
-+#define HUGEPAGE_PAGES 32
++
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
  
-+
++#undef HUGEPAGE_PAGES
++#define HUGEPAGE_PAGES 32
 +
  #define PAGESLAB_ADDR ((void *)(1234 * HUGEPAGE))
  #define PAGESLAB_AGE 5678
  
+@@ -102,6 +106,8 @@ edata_expect(edata_t *edata, size_t page_offset, size_t page_cnt) {
+ }
+ 
+ TEST_BEGIN(test_empty) {
++	fprintf(stderr, "HUGEPAGE=%zu, HUGEPAGE_PAGES=%zu, LG_PAGE=%d\n", 
++		(size_t)HUGEPAGE, (size_t)HUGEPAGE_PAGES, LG_PAGE);
+ 	bool err;
+ 	hpdata_t pageslab;
+ 	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
 -- 
 2.39.5 (Apple Git-154)
 
