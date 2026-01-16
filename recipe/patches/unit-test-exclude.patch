@@ -1,14 +1,14 @@
-From ddba82ad8137fa767659041c2ea112b9d09d58f5 Mon Sep 17 00:00:00 2001
+From 097828c667bb047d06fde5191497cbda75ca9a78 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 12:39:48 +0100
+Date: Fri, 16 Jan 2026 12:48:30 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 97 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 67 insertions(+), 30 deletions(-)
+ test/unit/psset.c | 117 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 78 insertions(+), 39 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..e246017 100644
+index 6ff7201..8c8ed43 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -1,3 +1,4 @@
@@ -16,7 +16,42 @@ index 6ff7201..e246017 100644
  #include "test/jemalloc_test.h"
  
  #include "jemalloc/internal/psset.h"
-@@ -125,28 +126,31 @@ TEST_BEGIN(test_fill) {
+@@ -35,16 +36,16 @@ test_psset_alloc_new(psset_t *psset, hpdata_t *ps, edata_t *r_edata,
+ 
+ 	test_psset_fake_purge(ps);
+ 
+-	psset_insert(psset, ps);
+-	psset_update_begin(psset, ps);
++	// psset_insert(psset, ps);
++	// psset_update_begin(psset, ps);
+ 
+-        void *addr = hpdata_reserve_alloc(ps, size);
+-        edata_init(r_edata, edata_arena_ind_get(r_edata), addr, size,
+-	    /* slab */ false, SC_NSIZES, /* sn */ 0, extent_state_active,
+-            /* zeroed */ false, /* committed */ true, EXTENT_PAI_HPA,
+-            EXTENT_NOT_HEAD);
+-        edata_ps_set(r_edata, ps);
+-	psset_update_end(psset, ps);
++    //     void *addr = hpdata_reserve_alloc(ps, size);
++    //     edata_init(r_edata, edata_arena_ind_get(r_edata), addr, size,
++	//     /* slab */ false, SC_NSIZES, /* sn */ 0, extent_state_active,
++    //         /* zeroed */ false, /* committed */ true, EXTENT_PAI_HPA,
++    //         EXTENT_NOT_HEAD);
++    //     edata_ps_set(r_edata, ps);
++	// psset_update_end(psset, ps);
+ }
+ 
+ static bool
+@@ -115,6 +116,8 @@ TEST_BEGIN(test_empty) {
+ 	/* Empty psset should return fail allocations. */
+ 	err = test_psset_alloc_reuse(&psset, &alloc, PAGE);
+ 	expect_true(err, "Empty psset succeeded in an allocation.");
++	fprintf(stderr, "test1\n");
++	fflush(stderr);
+ }
+ TEST_END
+ 
+@@ -125,28 +128,31 @@ TEST_BEGIN(test_fill) {
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
  
  	edata_t alloc[HUGEPAGE_PAGES];
@@ -66,7 +101,7 @@ index 6ff7201..e246017 100644
  }
  TEST_END
  
-@@ -733,16 +737,49 @@ TEST_END
+@@ -733,16 +739,49 @@ TEST_END
  
  int
  main(void) {
