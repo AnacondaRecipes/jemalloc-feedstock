@@ -47,7 +47,7 @@ outputs:
       files:
         - test.c
       commands:
-        - test ! -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
+        - test -f $PREFIX/lib/libjemalloc${SHLIB_EXT}
         - test -f $PREFIX/include/jemalloc/jemalloc.h
         - test ! -f $PREFIX/lib/libjemalloc.a
         - test ! -f $PREFIX/lib/libjemalloc_pic.a
