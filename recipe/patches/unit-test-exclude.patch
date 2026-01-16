@@ -1,6 +1,6 @@
-From 7e159552e19bc233686bdd54213d3bcf8a6e4664 Mon Sep 17 00:00:00 2001
+From 2d0a4a0ed16a9ec658e1284b9caffd416f99b3d8 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 15:26:35 +0100
+Date: Fri, 16 Jan 2026 15:33:17 +0100
 Subject: [PATCH] patch
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] patch
  1 file changed, 46 insertions(+), 41 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..55d9578 100644
+index 6ff7201..b9b9eb9 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
 @@ -31,20 +31,34 @@ test_psset_fake_purge(hpdata_t *ps) {
@@ -44,7 +44,7 @@ index 6ff7201..55d9578 100644
 +	fprintf(stderr, "test_psset_alloc_new r_edata address: %p\n", (void *)r_edata);
 +	fprintf(stderr, "test_psset_alloc_new psset address: %p\n", (void *)psset);
 +	fprintf(stderr, "test_psset_alloc_new ps address: %p\n", (void *)ps);
-+	fprintf(stderr, "test_psset_alloc_new addr address: %p\n", (void *)addr);
++	// fprintf(stderr, "test_psset_alloc_new addr address: %p\n", (void *)addr);
 +	fprintf(stderr, "test_psset_alloc_new size: %zu\n", size);
 +	fprintf(stderr, "test_psset_alloc_new SC_NSIZES: %zu\n", SC_NSIZES);
 +	fprintf(stderr, "test_psset_alloc_new extent_state_active: %d\n", extent_state_active);
