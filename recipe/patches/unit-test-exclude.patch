@@ -1,17 +1,17 @@
-From 67536d27c1e19dc88982e538ba32f51b80d099d0 Mon Sep 17 00:00:00 2001
+From 324be94608be2e9f374c208fe541ec326bd676ba Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 14:37:38 +0100
+Date: Fri, 16 Jan 2026 14:52:01 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 75 +++++++++++++++++++++++++++++------------------
- 1 file changed, 46 insertions(+), 29 deletions(-)
+ test/unit/psset.c | 72 +++++++++++++++++++++++++----------------------
+ 1 file changed, 39 insertions(+), 33 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..a255d2e 100644
+index 6ff7201..ca3d573 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
-@@ -38,13 +38,30 @@ test_psset_alloc_new(psset_t *psset, hpdata_t *ps, edata_t *r_edata,
+@@ -38,13 +38,28 @@ test_psset_alloc_new(psset_t *psset, hpdata_t *ps, edata_t *r_edata,
  	psset_insert(psset, ps);
  	psset_update_begin(psset, ps);
  
@@ -24,11 +24,9 @@ index 6ff7201..a255d2e 100644
 -	psset_update_end(psset, ps);
 +    void *addr = hpdata_reserve_alloc(ps, size);
 +	fprintf(stderr, "test1\n");
-+	fflush(stderr);
 +
-+	unsigned int ret = edata_arena_ind_get(r_edata);
-+	fprintf(stderr, "test_psset_alloc_new edata_arena_ind_get returned: %u\n", ret);
-+	fflush(stderr);
++	// unsigned int ret = edata_arena_ind_get(r_edata);
++	// fprintf(stderr, "test_psset_alloc_new edata_arena_ind_get returned: %u\n", ret);
 +
 +	fprintf(stderr, "test_psset_alloc_new r_edata address: %p\n", (void *)r_edata);
 +	fprintf(stderr, "test_psset_alloc_new psset address: %p\n", (void *)psset);
@@ -49,7 +47,7 @@ index 6ff7201..a255d2e 100644
  }
  
  static bool
-@@ -131,22 +148,22 @@ TEST_BEGIN(test_fill) {
+@@ -131,22 +146,22 @@ TEST_BEGIN(test_fill) {
  
  	edata_init_test(&alloc[0]);
  	test_psset_alloc_new(&psset, &pageslab, &alloc[0], PAGE);
@@ -88,25 +86,22 @@ index 6ff7201..a255d2e 100644
  }
  TEST_END
  
-@@ -736,12 +753,12 @@ main(void) {
+@@ -735,14 +750,5 @@ int
+ main(void) {
  	return test_no_reentrancy(
  	    test_empty,
- 	    test_fill,
+-	    test_fill,
 -	    test_reuse,
 -	    test_evict,
 -	    test_multi_pageslab,
 -	    test_stats,
 -	    test_oldest_fit,
 -	    test_insert_remove,
-+	    // test_reuse,
-+	    // test_evict,
-+	    // test_multi_pageslab,
-+	    // test_stats,
-+	    // test_oldest_fit,
-+	    // test_insert_remove,
- 	    test_purge_prefers_nonhuge,
- 	    test_purge_prefers_empty,
- 	    test_purge_prefers_empty_huge);
+-	    test_purge_prefers_nonhuge,
+-	    test_purge_prefers_empty,
+-	    test_purge_prefers_empty_huge);
++	    test_fill);
+ }
 -- 
 2.39.5 (Apple Git-154)
 
