@@ -1,0 +1,65 @@
+From 5afd11c6a513cc6078f16e17e0eeac15272e4b28 Mon Sep 17 00:00:00 2001
+From: Patryk Kups <pkups@anaconda.com>
+Date: Fri, 16 Jan 2026 11:01:36 +0100
+Subject: [PATCH] patch
+
+---
+ test/unit/psset.c | 44 ++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 42 insertions(+), 2 deletions(-)
+
+diff --git a/test/unit/psset.c b/test/unit/psset.c
+index 551467a..fc29f4b 100644
+--- a/test/unit/psset.c
++++ b/test/unit/psset.c
+@@ -733,6 +733,46 @@ TEST_END
+ 
+ int
+ main(void) {
+-	return test_no_reentrancy(
+-	    test_empty);
++	test_status_t status = test_no_reentrancy(test_empty);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_fill);
++	if (status != test_status_pass) {
++		return status;
++	}
++	test_no_reentrancy(test_reuse);
++	status = test_no_reentrancy(test_evict);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_multi_pageslab);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_stats);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_oldest_fit);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_insert_remove);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_purge_prefers_nonhuge);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_purge_prefers_empty);
++	if (status != test_status_pass) {
++		return status;
++	}
++	status = test_no_reentrancy(test_purge_prefers_empty_huge);
++	if (status != test_status_pass) {
++		return status;
++	}
++	return test_status_pass;
+ }
+-- 
+2.39.5 (Apple Git-154)
+
