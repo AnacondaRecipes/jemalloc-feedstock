@@ -1,22 +1,32 @@
-From 5afd11c6a513cc6078f16e17e0eeac15272e4b28 Mon Sep 17 00:00:00 2001
+From 636a73060fd6bf170d5284be026f7c21e4e4a7cf Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 11:01:36 +0100
+Date: Fri, 16 Jan 2026 11:23:30 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 44 ++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+ test/unit/psset.c | 54 ++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 42 insertions(+), 12 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 551467a..fc29f4b 100644
+index 6ff7201..fc29f4b 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
-@@ -733,6 +733,46 @@ TEST_END
+@@ -733,16 +733,46 @@ TEST_END
  
  int
  main(void) {
 -	return test_no_reentrancy(
--	    test_empty);
+-	    test_empty,
+-	    test_fill,
+-	    test_reuse,
+-	    test_evict,
+-	    test_multi_pageslab,
+-	    test_stats,
+-	    test_oldest_fit,
+-	    test_insert_remove,
+-	    test_purge_prefers_nonhuge,
+-	    test_purge_prefers_empty,
+-	    test_purge_prefers_empty_huge);
 +	test_status_t status = test_no_reentrancy(test_empty);
 +	if (status != test_status_pass) {
 +		return status;
