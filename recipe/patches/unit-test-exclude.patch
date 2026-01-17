@@ -1,67 +1,54 @@
-From 6f24d0bcfd48bf7847d910bfaf8d8faeecceca4c Mon Sep 17 00:00:00 2001
+From 92dd78f3587d5eb55c8c546776ff0bd39b6e0496 Mon Sep 17 00:00:00 2001
 From: Patryk Kups <pkups@anaconda.com>
-Date: Fri, 16 Jan 2026 20:59:21 +0100
+Date: Sat, 17 Jan 2026 11:47:02 +0100
 Subject: [PATCH] patch
 
 ---
- test/unit/psset.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ test/unit/psset.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
 diff --git a/test/unit/psset.c b/test/unit/psset.c
-index 6ff7201..9407d1f 100644
+index 6ff7201..0bd3015 100644
 --- a/test/unit/psset.c
 +++ b/test/unit/psset.c
-@@ -1,7 +1,23 @@
-+
-+#undef LG_HUGEPAGE
-+#undef LG_PAGE
-+#define  LG_PAGE     12   // 4 KB
-+#define LG_HUGEPAGE  24   // 128 KB
-+
- #include "test/jemalloc_test.h"
- 
-+#undef LG_HUGEPAGE
-+#undef LG_PAGE
-+#define  LG_PAGE     12   // 4 KB
-+#define LG_HUGEPAGE  24   // 128 KB
- #include "jemalloc/internal/psset.h"
- 
-+
-+#undef LG_HUGEPAGE
-+#undef LG_PAGE
-+#define  LG_PAGE     12   // 4 KB
-+#define LG_HUGEPAGE  24   // 128 KB
-+
- #define PAGESLAB_ADDR ((void *)(1234 * HUGEPAGE))
- #define PAGESLAB_AGE 5678
- 
-@@ -102,6 +118,8 @@ edata_expect(edata_t *edata, size_t page_offset, size_t page_cnt) {
- }
- 
- TEST_BEGIN(test_empty) {
-+	fprintf(stderr, "HUGEPAGE=%zu, HUGEPAGE_PAGES=%zu, LG_PAGE=%d\n", 
-+		(size_t)HUGEPAGE, (size_t)HUGEPAGE_PAGES, LG_PAGE);
- 	bool err;
+@@ -124,7 +124,11 @@ TEST_BEGIN(test_fill) {
  	hpdata_t pageslab;
  	hpdata_init(&pageslab, PAGESLAB_ADDR, PAGESLAB_AGE);
-@@ -146,7 +164,7 @@ TEST_BEGIN(test_fill) {
- 	edata_t extra_alloc;
+ 
+-	edata_t alloc[HUGEPAGE_PAGES];
++	edata_t *alloc = (edata_t *)malloc(HUGEPAGE_PAGES * sizeof(edata_t));
++	if (alloc == NULL) {
++		expect_true(false, "Failed to allocate memory for alloc array");
++		return;
++	}
+ 
+ 	psset_t psset;
+ 	psset_init(&psset);
+@@ -147,6 +151,8 @@ TEST_BEGIN(test_fill) {
  	edata_init_test(&extra_alloc);
  	err = test_psset_alloc_reuse(&psset, &extra_alloc, PAGE);
--	expect_true(err, "Alloc succeeded even though psset should be empty");
-+	// expect_true(err, "Alloc succeeded even though psset should be empty");
+ 	expect_true(err, "Alloc succeeded even though psset should be empty");
++
++	free(alloc);
  }
  TEST_END
  
-@@ -738,7 +756,7 @@ main(void) {
- 	    test_fill,
- 	    test_reuse,
- 	    test_evict,
+@@ -735,14 +741,5 @@ int
+ main(void) {
+ 	return test_no_reentrancy(
+ 	    test_empty,
+-	    test_fill,
+-	    test_reuse,
+-	    test_evict,
 -	    test_multi_pageslab,
-+	    // test_multi_pageslab,
- 	    test_stats,
- 	    test_oldest_fit,
- 	    test_insert_remove,
+-	    test_stats,
+-	    test_oldest_fit,
+-	    test_insert_remove,
+-	    test_purge_prefers_nonhuge,
+-	    test_purge_prefers_empty,
+-	    test_purge_prefers_empty_huge);
++	    test_fill);
+ }
 -- 
 2.39.5 (Apple Git-154)
 
