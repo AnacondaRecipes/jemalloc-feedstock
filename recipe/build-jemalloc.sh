@@ -32,5 +32,12 @@ else
   ./configure --disable-tls ${EXTRA_CONFIGURE_ARGS:-}
 fi
 make -j${CPU_COUNT}
+
+if [[ "${target_platform}" == "linux-aarch64" ]]; then
+  # Some tests in unit/psset.c require a large stack size.
+  # Without this test crashes on CI.
+  ulimit -s 65536
+fi
 make check
+
 make install
