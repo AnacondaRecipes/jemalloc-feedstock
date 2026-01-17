@@ -35,7 +35,7 @@ make -j${CPU_COUNT}
 
 if [[ "${target_platform}" == "linux-aarch64" ]]; then
   # Some tests in unit/psset.c require a large stack size.
-  # Without this test crashes on CI.
+  # Without following limit change, tests in unit/psset.c crash on CI.
   ulimit -s 65536
 fi
 make check
