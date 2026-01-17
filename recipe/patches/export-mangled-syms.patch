@@ -1,0 +1,23 @@
+--- configure   2020-06-03 18:33:47.024674769 +0200
++++ configure   2020-06-03 18:35:49.028687833 +0200
+@@ -13889,17 +13889,20 @@
+   f="${objroot}include/jemalloc/internal/public_symbols.txt"
+   mkdir -p "${objroot}include/jemalloc/internal"
+   cp /dev/null "${f}"
++  public_mangled_syms=""
+   for nm in `echo ${mangling_map} |tr ',' ' '` ; do
+     n=`echo ${nm} |tr ':' ' ' |awk '{print $1}'`
+     m=`echo ${nm} |tr ':' ' ' |awk '{print $2}'`
+     echo "${n}:${m}" >> "${f}"
+         public_syms=`for sym in ${public_syms}; do echo "${sym}"; done |grep -v "^${n}\$" |tr '\n' ' '`
++        public_mangled_syms="${public_mangled_syms} ${m}"
+   done
+   for sym in ${public_syms} ; do
+     n="${sym}"
+     m="${JEMALLOC_PREFIX}${sym}"
+     echo "${n}:${m}" >> "${f}"
+   done
++  public_syms="${public_syms} ${public_mangled_syms}"
+  ;;
+     "include/jemalloc/internal/private_symbols.awk":C)
+   f="${objroot}include/jemalloc/internal/private_symbols.awk"
